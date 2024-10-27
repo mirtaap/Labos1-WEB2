@@ -1,0 +1,57 @@
+body {
+    font-family: 'Verdana', sans-serif;
+    background-color: #e6f7ff; 
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #005b96;
+    text-align: center;
+}
+
+.main-content, .ticket-display {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form input[type="text"], form button {
+    padding: 12px;
+    margin: 8px 0;
+    width: 85%;
+    border: 1px solid #005b96;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #007acc;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #005b96;
+}
+
+a {
+    color: #007acc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}

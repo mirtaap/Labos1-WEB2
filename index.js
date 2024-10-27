@@ -108,18 +108,21 @@ app.post('/generate-ticket', async (req, res) => {
     client_secret: process.env.SECRET_ID,
     audience: `https://yourapp.com/api`, 
     grant_type: 'client_credentials',
+    scope: 'create:ticket read:ticket' // dodaj scope-ove koje koristiš
   });
+  
 
   const accessToken = tokenResponse.data.access_token;
 
   
-  //const apiResponse = await axios.post(`https://yourapp.com/api/ticket`, {
-  //  vatin, firstName, lastName,
-  //}, {
-  //  headers: {
-  // Authorization: `Bearer ${accessToken}`,
-  //  },
-  //});
+  const apiResponse = await axios.post(`https://yourapp.com/api/ticket`, {
+    vatin, firstName, lastName,
+  }, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  
 
   const ticketId = generateUniqueId();
   const createdAt = new Date();

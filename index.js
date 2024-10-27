@@ -9,12 +9,12 @@ const { auth } = require('express-openid-connect');
 
 const app = express();
 
-// Postavljanje middleware-a
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Postavke za bazu podataka
+
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -106,20 +106,20 @@ app.post('/generate-ticket', async (req, res) => {
   const tokenResponse = await axios.post(`https://dev-lbatmpgrgxqtv2la.us.auth0.com/oauth/token`, {
     client_id: process.env.MACHINE_TO_MACHINE,
     client_secret: process.env.SECRET_ID,
-    audience: `https://yourapp.com/api`, // Zamijenjeno s vašim API identifikatorom
+    audience: `https://yourapp.com/api`, 
     grant_type: 'client_credentials',
   });
 
   const accessToken = tokenResponse.data.access_token;
 
   
-  const apiResponse = await axios.post(`https://yourapp.com/api`, {
-    vatin, firstName, lastName,
-  }, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  //const apiResponse = await axios.post(`https://yourapp.com/api/ticket`, {
+  //  vatin, firstName, lastName,
+  //}, {
+  //  headers: {
+  // Authorization: `Bearer ${accessToken}`,
+  //  },
+  //});
 
   const ticketId = generateUniqueId();
   const createdAt = new Date();
@@ -141,7 +141,7 @@ app.get('/ticket/:ticketId', async (req, res) => {
   }
 
   
-  const qrUrl = `${process.env.BASE_URL}/scanned/${ticketId}`; // URL za QR kod
+  const qrUrl = `${process.env.BASE_URL}/scanned/${ticketId}`; 
   const qrCodeImage = await QRCode.toDataURL(qrUrl);
 
   res.send(`

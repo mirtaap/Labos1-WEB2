@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
@@ -9,11 +8,9 @@ const { auth } = require('express-openid-connect');
 
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -22,7 +19,6 @@ const db = new Pool({
   },
 });
 
-
 const authConfig = {
   authRequired: false,
   auth0Logout: true,
@@ -30,11 +26,9 @@ const authConfig = {
   baseURL: process.env.BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: process.env.AUTH0_DOMAIN,
-  
 };
 
 app.use(auth(authConfig));
-
 
 async function fetchTicketCount(vatin) {
   if (!vatin) {
@@ -47,13 +41,11 @@ async function fetchTicketCount(vatin) {
   return parseInt(result.rows[0].count, 10);
 }
 
-
 app.get('/', async (req, res) => {
   const user = req.oidc.user ? req.oidc.user : null;
 
   let ticketCount = 0; 
   if (user && user.vatin) {
-    
     ticketCount = await fetchTicketCount(user.vatin);
   }
 
@@ -85,14 +77,12 @@ app.get('/', async (req, res) => {
   `);
 });
 
-
 app.post('/generate-ticket', async (req, res) => {
   const { vatin, firstName, lastName } = req.body;
   if (!vatin || !firstName || !lastName) {
     return res.status(400).json({ error: 'Nedostaju podaci.' });
   }
 
-  
   const existingTickets = await db.query('SELECT COUNT(*) FROM tickets WHERE vatin = $1', [vatin]);
   const ticketCount = parseInt(existingTickets.rows[0].count, 10);
 
@@ -102,27 +92,23 @@ app.post('/generate-ticket', async (req, res) => {
     return res.status(400).json({ error: 'Za ovaj OIB već su kreirane tri ulaznice. Ne možete generirati više.' });
   }
 
-  
-  const tokenResponse = await axios.post(`https://dev-lbatmpgrgxqtv2la.us.auth0.com/oauth/token`, {
+  const tokenResponse = await axios.post(`${process.env.AUTH0_DOMAIN}/oauth/token`, {
     client_id: process.env.MACHINE_TO_MACHINE,
     client_secret: process.env.SECRET_ID,
-    audience: `https://yourapp.com/api`, 
+    audience: process.env.API_IDENTIFIER, 
     grant_type: 'client_credentials',
     scope: 'create:ticket read:ticket' 
   });
-  
 
   const accessToken = tokenResponse.data.access_token;
 
-  
-  const apiResponse = await axios.post(`https://yourapp.com/api/ticket`, {
+  const apiResponse = await axios.post(`${process.env.API_IDENTIFIER}/ticket`, {
     vatin, firstName, lastName,
   }, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  
 
   const ticketId = generateUniqueId();
   const createdAt = new Date();
@@ -133,7 +119,6 @@ app.post('/generate-ticket', async (req, res) => {
   res.redirect(`/ticket/${ticketId}`);
 });
 
-
 app.get('/ticket/:ticketId', async (req, res) => {
   const { ticketId } = req.params;
   const result = await db.query('SELECT * FROM tickets WHERE id = $1', [ticketId]);
@@ -143,8 +128,7 @@ app.get('/ticket/:ticketId', async (req, res) => {
     return res.status(404).send('Ulaznica nije pronađena.');
   }
 
-  
-  const qrUrl = `${process.env.BASE_URL}/scanned/${ticketId}`; 
+  const qrUrl = `${process.env.BASE_URL}/scanned/${ticketId}`;
   const qrCodeImage = await QRCode.toDataURL(qrUrl);
 
   res.send(`
@@ -167,7 +151,6 @@ app.get('/ticket/:ticketId', async (req, res) => {
     </html>
   `);
 });
-
 
 app.get('/scanned/:ticketId', async (req, res) => {
   const { ticketId } = req.params;
@@ -196,6 +179,5 @@ app.get('/scanned/:ticketId', async (req, res) => {
     </html>
   `);
 });
-
 
 app.listen(3000, () => console.log('Aplikacija pokrenuta na portu 3000'));

@@ -29,7 +29,8 @@ const authConfig = {
   secret: process.env.AUTH0_CLIENT_SECRET,
   baseURL: process.env.BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
-  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+  issuerBaseURL: process.env.AUTH0_DOMAIN,
+  
 };
 
 app.use(auth(authConfig));

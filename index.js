@@ -104,8 +104,8 @@ app.post('/generate-ticket', async (req, res) => {
 
   
   const tokenResponse = await axios.post(`https://dev-lbatmpgrgxqtv2la.us.auth0.com/oauth/token`, {
-    client_id: process.env.AUTH0_CLIENT_ID,
-    client_secret: process.env.AUTH0_CLIENT_SECRET,
+    client_id: process.env.MACHINE_TO_MACHINE,
+    client_secret: process.env.SECRET_ID,
     audience: `https://web2-qr-kod-api.com/ticket`, // Zamijenjeno s vašim API identifikatorom
     grant_type: 'client_credentials',
   });

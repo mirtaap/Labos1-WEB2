@@ -108,7 +108,7 @@ app.post('/generate-ticket', async (req, res) => {
     client_secret: process.env.SECRET_ID,
     audience: `https://yourapp.com/api`, 
     grant_type: 'client_credentials',
-    scope: 'create:ticket read:ticket' // dodaj scope-ove koje koristiš
+    scope: 'create:ticket read:ticket' 
   });
   
 

@@ -106,14 +106,14 @@ app.post('/generate-ticket', async (req, res) => {
   const tokenResponse = await axios.post(`https://dev-lbatmpgrgxqtv2la.us.auth0.com/oauth/token`, {
     client_id: process.env.MACHINE_TO_MACHINE,
     client_secret: process.env.SECRET_ID,
-    audience: `https://web2-qr-kod-api.com/ticket`, // Zamijenjeno s vašim API identifikatorom
+    audience: `https://yourapp.com/api`, // Zamijenjeno s vašim API identifikatorom
     grant_type: 'client_credentials',
   });
 
   const accessToken = tokenResponse.data.access_token;
 
   
-  const apiResponse = await axios.post(`https://web2-qr-kod-api.com/ticket`, {
+  const apiResponse = await axios.post(`https://yourapp.com/api`, {
     vatin, firstName, lastName,
   }, {
     headers: {
